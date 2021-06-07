@@ -1,3 +1,9 @@
+FROM opensuse/leap:15.3 as tools
+RUN zypper in -y curl docker squashfs xorriso
+RUN curl https://get.mocaccino.org/luet/get_luet_root.sh | sh
+RUN luet install -y extension/makeiso
+COPY tools /
+
 FROM opensuse/leap:15.3
 ARG ARCH=amd64
 ENV ARCH=${ARCH}
@@ -93,4 +99,5 @@ RUN zypper in -y upx && \
 ARG OS_NAME=RancherOS
 ARG OS_VERSION=999
 ARG OS_GIT=dirty
-#RUN OS_NAME=${OS_NAME} OS_VERSION=${OS_VERSION} OS_GIT=${OS_GIT} ONLY_KEY="70af9e8139db7c82" bash -x /usr/bin/finalize && sleep 2
+ARG FINALIZE=false
+RUN if [ "${FINALIZE}" = "true" ]; then OS_NAME=${OS_NAME} OS_VERSION=${OS_VERSION} OS_GIT=${OS_GIT} /usr/bin/finalize; fi

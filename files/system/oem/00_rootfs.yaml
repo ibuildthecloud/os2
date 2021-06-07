@@ -39,17 +39,17 @@ stages:
 
         # This is hidden so that if you run some selinux label checking or relabeling the bind
         # mount won't screw up things.  If you have two files at different paths they will get
-        # labeled as two different labels.
+        # labeled with two different labels.
         mkdir -p ${target}/empty
         mount ${target}/empty ${target} -o bind,ro
 
         # persist machine-id
-        #if [ -e /usr/local/etc/machine-id ]; then
-        #  cat /usr/local/etc/machine-id > /etc/machind-id
-        #else
-        #  mkdir -p /usr/local/etc
-        #  cp /etc/machine-id /usr/local/etc
-        #fi
+        if [ -s /usr/local/etc/machine-id ]; then
+          cat /usr/local/etc/machine-id > /etc/machine-id
+        else
+          mkdir -p /usr/local/etc
+          cp /etc/machine-id /usr/local/etc
+        fi
 
         # ensure /var/log/journal exists so it's labeled correctly
         mkdir -p /var/log/journal

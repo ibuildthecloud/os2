@@ -1,14 +1,18 @@
 #!/bin/bash
-set -e
+set -e -o pipefail
 
-if [ -n "ONLY_KEY" ]; then
-    packages="$(rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE} %{SIGPGP:pgpsig} %{SIGGPG:pgpsig}\n' | grep -v "$ONLY_KEY" | grep -v gpg-pubkey | awk '{print $1}')"
-fi
+packages="openSUSE-release-appliance-docker
+    systemd-presets-branding-MicroOS
+    dracut
+    upx
+    rpm-config-SUSE
+    openSUSE-release-15.3
+    openSUSE-build-key"
 
 packages="$packages $(zypper rm --details -D -u -y zypper | grep '^[a-z]' | grep -v procps)"
 
 echo Removing $packages
-rpm --nodeps -v -e $packages
+rpm --nodeps -v -e $packages 2>&1 | grep -v LC_MESSAGES
 
 echo Removing zypper data
 rm -rf /etc/zypp \
@@ -16,23 +20,19 @@ rm -rf /etc/zypp \
     /var/log/zypp \
     /var/lib/zypp
 
-echo Removing luet
-rm -rf /usr/bin/luet \
-   /var/cache/luet \
+echo Removing luet metadata
+rm -rf /var/cache/luet \
    /var/luet \
    /etc/luet
 
 echo Removing rpm
-rpm --nodeps -v -e rpm rpm-config-SUSE suse-module-tools
+rpm --nodeps -v -e rpm 2>&1 | grep -v LC_MESSAGES
 rm -rf /usr/lib/rpm \
     /usr/lib/sysimage/rpm \
     /etc/rpm
 
 echo Removing extra kernel weight
 rm -rf /boot/vmlinux*
-
-echo Removing self
-rm /usr/bin/finalize
 
 if ! command -v man >/dev/null; then
     echo Removing man pages
@@ -46,3 +46,6 @@ if [ -e /usr/lib/os-release.tmpl ]; then
     rm /usr/lib/os-release.tmpl
     ln -sf ../usr/lib/os-release /etc/os-release
 fi 
+
+echo Removing self
+rm /usr/bin/finalize
