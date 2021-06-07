@@ -1,4 +1,4 @@
-
+.DEFAULT_GOAL := iso
 IMAGE=ibuildthecloud/test
 TOOLS=${IMAGE}-tools
 
@@ -13,8 +13,8 @@ tools:
 .PHONY: iso
 iso: tools build
 	mkdir -p build
-	rm -f iso-container
+	rm -f build/iso-container
 	docker run -v /var/run:/var/run -it --cidfile=build/iso-container ${TOOLS} makeiso ${IMAGE}
 	docker cp $$(cat build/iso-container):/output.iso build/output.iso
 	docker rm -fv $$(cat build/iso-container)
-	rm -f iso-container
+	rm -f build/iso-container

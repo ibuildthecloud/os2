@@ -1,8 +1,9 @@
 FROM opensuse/leap:15.3 as tools
-RUN zypper in -y curl docker squashfs xorriso
+RUN zypper in -y curl docker squashfs xorriso go1.16 git
 RUN curl https://get.mocaccino.org/luet/get_luet_root.sh | sh
 RUN luet install -y extension/makeiso
 COPY tools /
+
 
 FROM opensuse/leap:15.3
 ARG ARCH=amd64
@@ -93,8 +94,8 @@ RUN luet install -y \
 COPY files/ /
 RUN mkinitrd
 
-RUN zypper in -y upx && \
-    upx -d /usr/bin/yip
+#RUN zypper in -y upx && \
+    #upx -d /usr/bin/yip
 
 ARG OS_NAME=RancherOS
 ARG OS_VERSION=999
