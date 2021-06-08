@@ -6,6 +6,10 @@ TOOLS=${IMAGE}-tools
 build:
 	docker build -t ${IMAGE} .
 
+.PHONY: push
+push: build
+	docker push ${IMAGE}
+
 .PHONY: tools
 tools:
 	docker build -t ${TOOLS} --target tools .
