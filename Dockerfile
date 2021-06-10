@@ -57,10 +57,6 @@ RUN zypper in -y \
     vim \
     which
 
-RUN curl -L https://github.com/containerd/nerdctl/releases/download/v0.8.3/nerdctl-0.8.3-linux-${ARCH}.tar.gz | tar xvzf - -C /usr/bin nerdctl
-RUN if [ "$ARCH" = "amd64" ]; then ARCH=x86_64; fi && \
-    curl -L https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_${ARCH}.tar.gz | tar xvzf - -C /usr/bin k9s
-
 RUN zypper ar https://download.opensuse.org/repositories/security:/SELinux/openSUSE_Leap_15.3/security:SELinux.repo
 #RUN zypper --gpg-auto-import-keys in -y --allow-vendor-change --allow-downgrade selinux-policy audit selinux-tools python3-policycoreutils policycoreutils-python-utils container-selinux -libsemanage1
 RUN zypper --gpg-auto-import-keys in -y --allow-vendor-change --allow-downgrade container-selinux -libsemanage1
@@ -89,7 +85,9 @@ RUN luet install -y \
     toolchain/yip \
     utils/installer \
     system/cos-setup \
-    system/grub-config
+    system/grub-config \
+    utils/nerdctl \
+    utils/k9s
 
 COPY files/ /
 RUN mkinitrd
