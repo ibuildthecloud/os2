@@ -15,7 +15,7 @@ COPY files/etc/luet/luet.yaml /etc/luet/luet.yaml
 
 FROM base as tools
 ENV LUET_NOLOCK=true
-RUN zypper in -y squashfs xorriso
+RUN zypper in -y docker squashfs xorriso
 COPY tools /
 RUN luet install -y toolchain/luet-makeiso
 
