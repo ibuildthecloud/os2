@@ -16,6 +16,7 @@ ENV DAPPER_ENV REPO TAG DRONE_TAG CROSS DOCKER_USERNAME DOCKER_PASSWORD AWS_ACCE
 ENV DAPPER_SOURCE /go/src/github.com/rancher/os/
 ENV DAPPER_OUTPUT ./bin ./dist
 ENV DAPPER_DOCKER_SOCKET true
+ENV DAPPER_RUN_ARGS "-v ros-go16-pkg-1:/go/pkg -v ros-go16-cache-1:/root/.cache/go-build"
 WORKDIR ${DAPPER_SOURCE}
 
 ENTRYPOINT ["./scripts/entry"]
